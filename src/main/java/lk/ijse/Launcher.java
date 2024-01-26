@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class Launcher extends Application {
@@ -13,9 +14,10 @@ public class Launcher extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Parent rootNode = FXMLLoader.load(this.getClass().getResource("/view/Server.fxml"));
-        Scene scene =new Scene(rootNode);
+        Parent parent = FXMLLoader.load(getClass().getResource("/view/login_form.fxml"));
+        Scene scene = new Scene(parent);
         stage.setScene(scene);
+        stage.setTitle("Zen Chat");
         stage.show();
     }
 }

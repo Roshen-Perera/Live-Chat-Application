@@ -1,0 +1,14 @@
+* {
+    -fx-primary-color: #1B1464;
+    -fx-secondary-color: #4B6EAF;
+    -fx-grey-color: #ffffff;
+
+    -fx-focus-color: -fx-secondary-color;
+}
+.text-field {
+    -fx-accent: -fx-primary-color;
+    -fx-background-color: -fx-grey-color, #ffffff;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-text-fill: #000000;
+}
