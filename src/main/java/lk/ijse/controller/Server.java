@@ -18,8 +18,27 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 public class Server {
-    public static void server() throws IOException {
-        ServerSocket serverSocket = new ServerSocket(3002);
-        new ArrayList<>();
+
+    public static ArrayList<ClientHandler> clientList = new ArrayList<>();
+
+    private static LoginFormController login = new LoginFormController();
+    public static void start() throws IOException {
+        new Thread(()->{
+            try {
+                String username = login.username;
+                ServerSocket serverSocket = new ServerSocket(3002);
+                Socket socket;
+                while (true) {
+                    System.out.println("[SERVER] : Waiting for Clients...");
+                    //socket is referred to as a client.
+                    socket = serverSocket.accept();
+                    System.out.println("[SERVER] : Client " + username + " Accepted");
+                    ClientHandler clients = new ClientHandler(socket, clientList);
+                    clientList.add(clients);
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }).start();
     }
 }

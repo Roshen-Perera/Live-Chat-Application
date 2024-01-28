@@ -27,7 +27,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </JFXButton>
-            <Label fx:id="user" layoutX="59.0" layoutY="12.0" textFill="#dfe6e9">
+            <Label fx:id="lblUser" layoutX="59.0" layoutY="12.0" textFill="#dfe6e9">
                <font>
                   <Font name="System Bold" size="20.0" />
                </font>
@@ -36,7 +36,7 @@
       </AnchorPane>
       <AnchorPane layoutX="13.0" layoutY="552.0" prefHeight="40.0" prefWidth="332.0" style="-fx-background-radius: 20; -fx-background-color: #dfe6e9;">
          <children>
-            <TextField fx:id="chatfield" layoutX="46.0" prefHeight="40.0" prefWidth="243.0" promptText="Type Something" style="-fx-background-color: #dfe6e9; -fx-background-radius: 0;" stylesheets="@../stylesheets/chat.css">
+            <TextField fx:id="txtChatField" layoutX="46.0" prefHeight="40.0" prefWidth="243.0" promptText="Type Something" style="-fx-background-color: #dfe6e9; -fx-background-radius: 0;" stylesheets="@../stylesheets/chat.css">
                <font>
                   <Font name="Segoe UI Semibold" size="12.0" />
                </font></TextField>

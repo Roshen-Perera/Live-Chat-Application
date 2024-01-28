@@ -5,16 +5,29 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
+
 public class ClientFormController {
 
     @FXML
-    private Label user;
+    private Label lblUser;
 
     @FXML
-    private TextField chatfield;
+    private TextField txtChatField;
 
-    public void initialize(){
-        user.setText(LoginFormController.username);
+    Socket socket;
+    BufferedReader in;
+    PrintWriter out;
+
+    public void initialize() throws IOException {
+        lblUser.setText(LoginFormController.username);
+        socket = new Socket("localhost", 3002);
+        in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        out = new PrintWriter(socket.getOutputStream(), true);
     }
     @FXML
     void btnAttachOnAction(ActionEvent event) {
@@ -33,51 +46,8 @@ public class ClientFormController {
 
     @FXML
     void btnSendOnAction(ActionEvent event) {
-
+        String message = txtChatField.getText();
+        System.out.println("["+lblUser.getText()+"]"+" : "+message);
+        txtChatField.clear();
     }
-/*    @FXML
-    private TextArea chatArea;
-
-    @FXML
-    private TextField chatField;
-    @FXML
-    private AnchorPane rootNode;
-    String message = "";
-    DataOutputStream dataOutputStream;
-    DataInputStream dataInputStream;
-
-    public void initialize(){
-        chatArea.setEditable(false);
-        new Thread(() -> {
-            try {
-                // Open a socket and specify server address and port
-                Socket socket = new Socket("localhost", 3000);
-
-                // Output stream used for writing data to the server
-                dataOutputStream = new DataOutputStream(socket.getOutputStream());
-                dataInputStream = new DataInputStream(socket.getInputStream());
-
-                while (!message.startsWith("end")) {
-                    // Receive and print the server's response
-                    message = dataInputStream.readUTF();
-                    chatArea.appendText("\nServer: "+message);
-                }
-
-                //Close streams and socket
-                dataOutputStream.close();
-                dataInputStream.close();
-                socket.close();
-
-            } catch (IOException e) {
-                System.out.println(e.getMessage());
-            }
-        }).start();
-    }
-
-    @FXML
-    void btnSendOnAction(ActionEvent event) throws IOException {
-        // Send the user input to the server
-        dataOutputStream.writeUTF(chatField.getText());
-        dataOutputStream.flush();
-    }*/
 }

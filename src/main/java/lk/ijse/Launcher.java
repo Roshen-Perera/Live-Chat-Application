@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import lk.ijse.controller.Server;
 
 public class Launcher extends Application {
     public static void main(String[] args) {
@@ -19,5 +20,6 @@ public class Launcher extends Application {
         stage.setScene(scene);
         stage.setTitle("Zen Chat");
         stage.show();
+        Server.start();
     }
 }
