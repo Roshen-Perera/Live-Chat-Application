@@ -4,38 +4,44 @@ import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 
-public class ClientHandler implements Runnable{
+public class ClientHandler  implements Runnable{
     private Socket socket;
-    private ArrayList<ClientHandler> clientList;
-    private BufferedReader in;
-    private PrintWriter out;
+    private static ArrayList<DataOutputStream> clientList;
+    private DataInputStream reader;
+    private DataOutputStream writer;
 
-    public ClientHandler(Socket socket, ArrayList<ClientHandler> clientList) throws IOException {
+    public ClientHandler(Socket socket, ArrayList<DataOutputStream> clientList) throws IOException {
         this.socket = socket;
         this.clientList = clientList;
-        this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        this.out = new PrintWriter(socket.getOutputStream());
+        this.reader = new DataInputStream(socket.getInputStream());
+        this.writer = new DataOutputStream(socket.getOutputStream());
+        clientList.add(writer);
     }
 
     @Override
     public void run() {
         try {
             while (true){
-                String message = in.readLine();
-                for (ClientHandler clientHandler : clientList){
-                    clientHandler.out.println(message);
-                }
+                String message = reader.readUTF();
+                broadcastMessage(message);
             }
         }catch (IOException e){
             e.printStackTrace();
         }finally {
             try {
                 socket.close();
-                in.close();
-                out.close();
+                reader.close();
+                writer.close();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
+        }
+   }
+
+    public static void broadcastMessage(String message) throws IOException {
+        for (DataOutputStream writer : clientList){
+            writer.writeUTF(message);
+            writer.flush();
         }
     }
 }
