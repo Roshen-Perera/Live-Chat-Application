@@ -22,8 +22,18 @@ public class ClientHandler  implements Runnable{
     public void run() {
         try {
             while (true){
-                String message = reader.readUTF();
-                broadcastMessage(message);
+                String type = reader.readUTF();
+                if(type.equals("TEXT")){
+                    String message = reader.readUTF();
+                    broadcastMessage(message);
+                } else if (type.equals("IMAGE")) {
+                    String img = reader.readUTF();
+                    int fileSize = reader.readInt();
+                    byte[] fileData = new byte[fileSize];
+                    reader.readFully(fileData);
+                    broadcastImage(fileData, img);
+                }
+
             }
         }catch (IOException e){
             e.printStackTrace();
@@ -40,8 +50,23 @@ public class ClientHandler  implements Runnable{
 
     public static void broadcastMessage(String message) throws IOException {
         for (DataOutputStream writer : clientList){
+            writer.writeUTF("TEXT");
             writer.writeUTF(message);
             writer.flush();
+        }
+    }
+
+    private void broadcastImage(byte[] fileData, String img) {
+        for (DataOutputStream writer : clientList) {
+            try {
+                writer.writeUTF("IMAGE");
+                writer.writeUTF(img);
+                writer.writeInt(fileData.length);
+                writer.write(fileData);
+                writer.flush();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 }

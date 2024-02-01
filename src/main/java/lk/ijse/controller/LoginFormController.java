@@ -21,7 +21,9 @@ public class LoginFormController {
         Stage stage = new Stage();
         stage.setScene(new Scene(FXMLLoader.load(getClass().getResource("/view/client_form.fxml"))));
         stage.setTitle(txtUsername.getText() + "'s Chat");
+        stage.setResizable(false);
         stage.show();
+
         txtUsername.clear();
     }
 }

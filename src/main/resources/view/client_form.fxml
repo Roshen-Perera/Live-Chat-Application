@@ -16,7 +16,7 @@
    <children>
       <AnchorPane prefHeight="54.0" prefWidth="400.0" style="-fx-background-color: #1B1464;">
          <children>
-            <JFXButton contentDisplay="GRAPHIC_ONLY" layoutX="340.0" layoutY="3.0" onAction="#btnMinimizeOnAction" style="-fx-background-radius: 25;">
+            <JFXButton fx:id="btnmini" contentDisplay="GRAPHIC_ONLY" layoutX="340.0" layoutY="3.0" onAction="#btnMinimizeOnAction" style="-fx-background-radius: 25;">
                <graphic>
                   <ImageView fitHeight="40.0" fitWidth="40.0">
                      <image>

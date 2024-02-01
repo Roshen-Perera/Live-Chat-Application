@@ -4,24 +4,20 @@ import com.jfoenix.controls.JFXButton;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseButton;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
-import javafx.stage.Popup;
+import javafx.stage.Stage;
 
 import java.io.*;
 import java.net.Socket;
 import java.nio.file.Files;
 
-public class ClientFormController{
+public class ClientFormController {
 
 /*    @FXML
     private HBox hboxreciever;
@@ -31,6 +27,9 @@ public class ClientFormController{
 
     @FXML
     private JFXButton emoji;
+
+    @FXML
+    private JFXButton btnmini;
 
     @FXML
     private Label lblUser;
@@ -63,26 +62,74 @@ public class ClientFormController{
                 writer = new DataOutputStream(socket.getOutputStream());
 
                 while (true){
-                    String message = reader.readUTF();
-                    System.out.println(message);
-                    Platform.runLater(()->{
-                        if(condition.equals("this")){
-                            HBox hBox = new HBox();
-                            hBox.setStyle("-fx-alignment: top-right;-fx-fill-height: true;-fx-min-height: 50;-fx-pref-width: 520;-fx-max-width: 520;-fx-padding: 10");
-                            Label messageLbl = new Label(message);
-                            messageLbl.setStyle("-fx-background-color:  #27ae60;-fx-background-radius:15;-fx-font-size: 14;-fx-font-weight: normal;-fx-text-fill: white;-fx-wrap-text: true;-fx-alignment: center-left;-fx-content-display: left;-fx-padding: 10;-fx-max-width: 350;");
-                            hBox.getChildren().add(messageLbl);
-                            vBox.getChildren().add(hBox);
-                            condition = "";
-                        } else {
-                            HBox hBox = new HBox();
-                            hBox.setStyle("-fx-alignment: top-left;-fx-fill-height: true;-fx-min-height: 50;-fx-pref-width: 520;-fx-max-width: 520;-fx-padding: 10");
-                            Label messageLbl = new Label(message);
-                            messageLbl.setStyle("-fx-background-color:  #9b2b2b;-fx-background-radius:15;-fx-font-size: 14;-fx-font-weight: normal;-fx-text-fill: white;-fx-wrap-text: true;-fx-alignment: center-left;-fx-content-display: left;-fx-padding: 10;-fx-max-width: 350;");
-                            hBox.getChildren().add(messageLbl);
-                            vBox.getChildren().add(hBox);
-                        }
-                    });
+                    String type = reader.readUTF();
+
+                    if(type.equals("TEXT")){
+                        String message = reader.readUTF();
+                        System.out.println(message);
+                        Platform.runLater(()->{
+                            if(condition.equals("this")){
+                                HBox hBox = new HBox();
+                                hBox.setStyle("-fx-alignment: top-right;-fx-fill-height: true;-fx-min-height: 50;-fx-pref-width: 520;-fx-max-width: 520;-fx-padding: 10");
+                                Label messageLbl = new Label("Me: "+message);
+                                messageLbl.setStyle("-fx-background-color:  #1B1464;-fx-background-radius:15;-fx-font-size: 14;-fx-font-weight: normal;-fx-text-fill: white;-fx-wrap-text: true;-fx-alignment: center-left;-fx-content-display: left;-fx-padding: 10;-fx-max-width: 350;");
+                                hBox.getChildren().add(messageLbl);
+                                vBox.getChildren().add(hBox);
+                                condition = "";
+                            } else {
+                                HBox hBox = new HBox();
+                                hBox.setStyle("-fx-alignment: top-left;-fx-fill-height: true;-fx-min-height: 50;-fx-pref-width: 520;-fx-max-width: 520;-fx-padding: 10");
+                                Label messageLbl = new Label(LoginFormController.username+": "+message);
+                                messageLbl.setStyle("-fx-background-color:  #4B6EAF;-fx-background-radius:15;-fx-font-size: 14;-fx-font-weight: normal;-fx-text-fill: white;-fx-wrap-text: true;-fx-alignment: center-left;-fx-content-display: left;-fx-padding: 10;-fx-max-width: 350;");
+                                hBox.getChildren().add(messageLbl);
+                                vBox.getChildren().add(hBox);
+                            }
+                        });
+                    } else if (type.equals("IMAGE")) {
+                        String message = reader.readUTF();
+                        System.out.println(message);
+                        int file = reader.readInt();
+                        byte [] fileData = new byte[file];
+                        reader.readFully(fileData);
+
+                        Platform.runLater(() -> {
+                            ImageView imageView = new ImageView();
+                            imageView.setPreserveRatio(true);
+                            imageView.setFitWidth(150);
+                            imageView.setFitHeight(200);
+
+                            try {
+                                ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(fileData);
+                                Image image = new Image(byteArrayInputStream);
+                                imageView.setImage(image);
+
+                                if (condition.equals("this")) {
+                                    Label label = new Label("Me:");
+                                    label.setStyle("-fx-background-color:  #27ae60;-fx-background-radius:15;-fx-font-size: 14;-fx-font-weight: normal;-fx-text-fill: white;-fx-wrap-text: true;-fx-alignment: center-left;-fx-content-display: left;-fx-padding: 10;-fx-max-width: 350;");
+                                    BorderPane borderPane1 = new BorderPane();
+                                    borderPane1.setRight(label);
+
+                                    BorderPane borderPane = new BorderPane();
+                                    borderPane.setRight(imageView);
+                                    vBox.getChildren().add(borderPane1);
+                                    vBox.getChildren().add(borderPane);
+                                    condition = "";
+                                } else {
+                                    Label label = new Label(message);
+                                    label.setStyle("-fx-background-color:  #9b2b2b;-fx-background-radius:15;-fx-font-size: 14;-fx-font-weight: normal;-fx-text-fill: white;-fx-wrap-text: true;-fx-alignment: center-right;-fx-content-display: left;-fx-padding: 10;-fx-max-width: 350;");
+                                    BorderPane borderPane1 = new BorderPane();
+                                    borderPane1.setLeft(label);
+
+                                    BorderPane borderPane = new BorderPane();
+                                    borderPane.setLeft(imageView);
+                                    vBox.getChildren().add(borderPane1);
+                                    vBox.getChildren().add(borderPane);
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        });
+                    }
                 }
             }catch (IOException e){
                 throw new RuntimeException(e);
@@ -91,7 +138,28 @@ public class ClientFormController{
     }
     @FXML
     void btnAttachOnAction(ActionEvent event) {
+        String sender = lblUser.getText();
+        condition = "this";
+        Platform.runLater(() -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("PNG Files", "*.png"),
+                    new FileChooser.ExtensionFilter("JPEG Files", "*.jpg"));
+            File selectedFiles = fileChooser.showOpenDialog(null);
 
+            if (selectedFiles != null) {
+                try {
+                    byte [] fileData = Files.readAllBytes(selectedFiles.toPath());
+
+                    writer.writeUTF("IMAGE");
+                    writer.writeUTF(sender);
+                    writer.writeInt(fileData.length);
+                    writer.write(fileData);
+                    writer.flush();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     @FXML
@@ -101,18 +169,20 @@ public class ClientFormController{
 
     @FXML
     void btnMinimizeOnAction(ActionEvent event) {
-
+        btnmini.setOnAction(e -> {
+            ((Stage) ((Button) e.getSource()).getScene().getWindow()).setIconified(true);
+        });
     }
 
     @FXML
     void btnSendOnAction(ActionEvent event) throws IOException {
-        String message = txtChatField.getText().trim(); // Trim to remove leading/trailing spaces
-        String sender = lblUser.getText();
-        writer.writeUTF(sender+": "+message);
-        writer.flush(); // Ensure the message is sent immediately
-
-        // Clear the text field after sending the message
-        txtChatField.clear();
         condition = "this";
+        String message = txtChatField.getText().trim();
+        String sender = lblUser.getText();
+        writer.writeUTF("TEXT");
+        writer.writeUTF(message);
+        writer.flush();
+        System.out.println(sender+": "+message);
+        txtChatField.clear();
     }
 }
