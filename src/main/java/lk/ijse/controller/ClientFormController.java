@@ -97,8 +97,8 @@ public class ClientFormController {
                             }
                         });
                     } else if (type.equals("IMAGE")) {
-                        String message = reader.readUTF();
-                        System.out.println(message);
+                        String sender = reader.readUTF();
+                        System.out.println(sender);
                         int file = reader.readInt();
                         byte [] fileData = new byte[file];
                         reader.readFully(fileData);
@@ -115,7 +115,7 @@ public class ClientFormController {
                                 imageView.setImage(image);
 
                                 if (condition.equals("this")) {
-                                    Label label = new Label("Me:");
+                                    Label label = new Label(sender+": ");
                                     label.setStyle("-fx-background-color:  #1B1464;-fx-background-radius:15;-fx-font-size: 14;-fx-font-weight: normal;-fx-text-fill: white;-fx-wrap-text: true;-fx-alignment: center-left;-fx-content-display: left;-fx-padding: 10;-fx-max-width: 350;");
                                     BorderPane borderPane1 = new BorderPane();
                                     borderPane1.setRight(label);
@@ -126,7 +126,7 @@ public class ClientFormController {
                                     vBox.getChildren().add(borderPane);
                                     condition = "";
                                 } else {
-                                    Label label = new Label(message);
+                                    Label label = new Label(sender+": ");
                                     label.setStyle("-fx-background-color:  #4B6EAF;-fx-background-radius:15;-fx-font-size: 14;-fx-font-weight: normal;-fx-text-fill: white;-fx-wrap-text: true;-fx-alignment: center-right;-fx-content-display: left;-fx-padding: 10;-fx-max-width: 350;");
                                     BorderPane borderPane1 = new BorderPane();
                                     borderPane1.setLeft(label);
@@ -212,7 +212,7 @@ public class ClientFormController {
         String message = txtChatField.getText().trim();
         String sender = lblUser.getText();
         writer.writeUTF("TEXT");
-        writer.writeUTF(message);
+        writer.writeUTF(sender+": "+message);
         writer.flush();
         System.out.println(sender+": "+message);
         txtChatField.clear();
